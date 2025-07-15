@@ -29,9 +29,7 @@ const userSchema = new mongoose.Schema({
     todoOwner : [
         {type : mongoose.Schema.Types.ObjectId, ref : 'Todo'}
     ],
-    todoMember : [
-        {type : mongoose.Schema.Types.ObjectId, ref : 'Todo'}
-    ],
+    
 } , {timestamps : true})
 
 
