@@ -7,11 +7,13 @@ const userSchema = new mongoose.Schema({
     },
     username : {
         type : String,
-        required : true
+        required : true,
+        unique : true
     },
     email : {
         type : String,
-        required : true
+        required : true,
+        unique : true
     },
     password : {
         type : String,
@@ -22,6 +24,7 @@ const userSchema = new mongoose.Schema({
     },
     profileImage : {
         type : String,
+        default : ""
     },
     todoOwner : [
         {type : mongoose.Schema.Types.ObjectId, ref : 'Todo'}
@@ -29,7 +32,7 @@ const userSchema = new mongoose.Schema({
     todoMember : [
         {type : mongoose.Schema.Types.ObjectId, ref : 'Todo'}
     ],
-})
+} , {timestamps : true})
 
 
 module.exports = mongoose.model('User' , userSchema)
