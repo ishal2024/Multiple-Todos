@@ -1,4 +1,5 @@
 const userModel = require('../models/user.models')
+const uploadCloud = require('../utils/cloudinary.utils')
 const bcrypt = require('../utils/hashPassword.utils')
 const jwt = require('../utils/jwt.utils')
 
@@ -51,16 +52,61 @@ async function logout(req, res) {
         console.log(decodedToken)
         const user = await userModel.findById(decodedToken?.userId)
         console.log(user)
-        if(!user) return res.status(400).json({ message: 'Invalid Token' })
+        if (!user) return res.status(400).json({ message: 'Invalid Token' })
         const object = {
             httpOnly: true,
             secure: true
         }
-        res.status(400).clearCookie('token' , object).json({message : 'User Logged Out' , user})
-        
+        res.status(400).clearCookie('token', object).json({ message: 'User Logged Out', user })
+
     } catch (error) {
-        res.status(400).json({ message: error.message})
+        res.status(400).json({ message: error.message })
     }
 }
 
-module.exports = { registerUser, loginUser  , logout}
+async function updateImage(req, res) {
+    try {
+        const userId = req.user?._id
+        const user = await userModel.findById(userId)
+        if (!user) return res.status(400).json({ message: "User not exist" })
+
+        const path = req.file?.path
+        if (!path) return res.status(400).json({ message: "Path is not defined" })
+        const response = await uploadCloud(path)
+        if (!response?.url) return res.status(400).json({ message: "Image not Uploaded" })
+
+        const updatedUser = await userModel.findByIdAndUpdate(userId, { $set: { profileImage: response?.url } }, { new: true })
+
+        res.status(200).json({ message: "User Picture is Updated", updatedUser })
+
+    } catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+
+}
+
+async function updateUser(req, res) {
+    try {
+        const requiredField = ['fullname', "email", "username", "description"]
+        const updateField = Object.keys(req.body)
+        if (updateField.length === 0) return res.status(400).json({ messgae: "Please send data to update" })
+
+
+        let updatedUser = null
+
+        for (let key in requiredField) {
+          
+            if (updateField.includes(requiredField[key])) {
+                updatedUser = await userModel.findByIdAndUpdate(req.user?._id,
+                    { $set: { [requiredField[key]]: req.body[requiredField[key]] } }, { new: true })
+            }
+        }
+
+        res.status(200).json({ messgae: "User is updated", updatedUser })
+
+    } catch (error) {
+        res.status(400).json({ messgae: error.message })
+    }
+}
+
+module.exports = { registerUser, loginUser, logout, updateImage, updateUser }

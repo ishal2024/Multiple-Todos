@@ -1,5 +1,3 @@
-
-const { title } = require('process')
 const todoModels = require('../models/todos.models')
 const userModels = require('../models/user.models')
 const uploadCloud = require('../utils/cloudinary.utils')
@@ -35,8 +33,15 @@ async function addMembertoTodo(req, res) {
     try {
         const todoCode = req.body?.todoCode
         if (!todoCode) return res.status(400).json({ message: "Please enter the code" })
+
         const todo = await todoModels.find({ todoCode: todoCode })
         if (todo.length === 0) res.status(400).json({ message: "Invalid Todo Code" })
+
+        const isMember = todo[0].members.some((id) => id.equals(req.user?._id))
+        const isAdmin = todo[0].admin.some((id) => id.equals(req.user?._id))
+
+        if(isMember || isAdmin) return res.status(400).json({ message: "User is already Member or Admin of this Group"})
+
         const updatedTodo = await todoModels.findByIdAndUpdate(todo[0]?._id,
             { $push: { members: req.user?._id } }, { new: true })
         res.status(200).json({ message: `You became member of ${updatedTodo.title}`, updatedTodo })
@@ -56,10 +61,16 @@ async function removeMember(req, res) {
         const todo = await todoModels.findById(todoId)
         if (!todo) return res.status(400).json({ message: "Invalid todo Id" })
 
+        if (!todo.admin.includes(req.user?._id)) {
+            return res.status(400).json({
+                messgae: 'Only Admin Can delete Todo'
+            })
+        }
+
         const todoMember = await todoModels.find({ members: userId, _id: todoId })
         if (todoMember.length === 0) return res.status(400).json({ message: "He is not memeber of this todo" })
 
-        const updatedTodo = await todoModels.findByIdAndUpdate(todoId, { $pull: { members: userId } })
+        const updatedTodo = await todoModels.findByIdAndUpdate(todoId, { $pull: { members: userId } } , {new : true})
         res.status(200).json({ message: "User is removed", updatedTodo })
 
     } catch (error) {
@@ -72,6 +83,11 @@ async function updateTodo(req, res) {
     const todoId = req.params?.todoId
     const todo = await todoModels.findById(todoId)
     if (!todo) return res.status(400).json({ message: "Invalid TodoId" })
+    if (!todo.admin.includes(req.user?._id)) {
+        return res.status(400).json({
+            messgae: 'Only Admin Can update Todo'
+        })
+    }
     const updatedTodo = await todoModels.findByIdAndUpdate(todoId,
         {
             $set: {
@@ -88,8 +104,15 @@ async function updateThumbnail(req, res) {
     try {
         const todo = await todoModels.findById(req.params?.todoId)
         if (!todo) return res.status(400).json({ messgae: 'Invalid todoId' })
+
+        if (!todo.admin.includes(req.user?._id)) {
+            return res.status(400).json({
+                messgae: 'Only Admin Can Update Todo'
+            })
+        }
         const path = req.file?.path
         if (!path) return res.status(400).json({ messgae: "Path is not defined" })
+
         const response = await uploadCloud(path)
         if (!response?.url) return res.status(400).json({ messgae: "Image is not Uploaded" })
         const updatedTodo = await todoModels.findByIdAndUpdate(req.params?.todoId,
@@ -106,12 +129,15 @@ async function deleteTodo(req, res) {
         const todoId = req.params?.todoId
         const todo = await todoModels.findById(req.params?.todoId)
         if (!todo) return res.status(400).json({ messgae: 'Invalid todoId' })
-         
+
         if (!todo.admin.includes(req.user?._id)) {
             return res.status(400).json({
                 messgae: 'Only Admin Can delete Todo'
             })
         }
+
+        await userModels.findByIdAndUpdate(req.user?._id , {$pull : {todoOwner : todoId}})
+
         await todoModels.findByIdAndDelete(todoId)
         res.status(200).json({ messgae: 'Todo is deleted', todo })
 
@@ -120,5 +146,18 @@ async function deleteTodo(req, res) {
     }
 }
 
+async function getAllTodos(req,res){
+    try {
+        const userId = req.user?._id
+        const todos = await todoModels.find({$or : [{members : userId} , {admin : userId}]}).populate('admin').populate('members')
+        if(todos.length === 0) return res.status(200).json({message : "No todos available"})
+        res.status(200).json({message : "All Todos" , todos})
+        
+    } catch (error) {
+        res.status(200).json({message : error.message})
+    }
 
-module.exports = { createTodo, addMembertoTodo, removeMember, updateTodo, updateThumbnail, deleteTodo }
+}
+
+
+module.exports = { createTodo, addMembertoTodo, removeMember, updateTodo, updateThumbnail, deleteTodo , getAllTodos }
