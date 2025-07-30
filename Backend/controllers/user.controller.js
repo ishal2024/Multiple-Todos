@@ -58,7 +58,9 @@ async function logout(req, res) {
         if (!user) return res.status(400).json({ message: 'Invalid Token' })
         const object = {
             httpOnly: true,
-            secure: true
+            secure: true,         
+            sameSite: "None",
+
         }
         res.status(200).clearCookie('token', object).json({ message: 'User Logged Out', user })
 
