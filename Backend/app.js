@@ -27,10 +27,10 @@ app.use(cors({
 }))
 
 // ✅ Handle Preflight Requests
-app.options('*', cors({
-  origin: allowedOrigin,
-  credentials: true,
-}))
+// app.options('*', cors({
+//   origin: allowedOrigin,
+//   credentials: true,
+// }))
 
 
 app.use('/user' , userRouter)
