@@ -37,7 +37,9 @@ async function loginUser(req, res) {
         const token = jwt.generateToken({ userId: user[0]?._id, email: user[0]?.email })
         const object = {
             httpOnly: true,
-            secure: true
+            secure: true,
+            sameSite: "None",       // Cross-origin ke liye required
+            maxAge: 7 * 24 * 60 * 60 * 1000
         }
         res.status(200).cookie("token", token, object).json({ message: 'User is Logged In', userInfo: user[0] })
 
