@@ -14,5 +14,9 @@ router.post('/updateUserImage' , upload.single('profileImage') , isLoggedIn ,use
 
 router.post('/updateUser' , isLoggedIn ,userController.updateUser)
 
+router.get('/getUser' , isLoggedIn , userController.getUserInfo)
+
+router.post('/changePassword' , isLoggedIn , userController.changePassword)
+
 
 module.exports = router

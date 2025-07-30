@@ -10,8 +10,12 @@ router.post('/create/:todoId' , isLoggedIn , upload.single('image') , subtodoCon
 
 router.get('/delete/:subtodoId' , isLoggedIn , subtodoController.deleteSubtodo)
 
+router.post('/update/:subtodoId' , isLoggedIn , upload.single('image')  , subtodoController.updateSubtodo)
+
 router.get('/like/:subtodoId' , isLoggedIn , likeController.toggleLike)
 
 router.get('/dislike/:subtodoId' , isLoggedIn , likeController.toggledisLike)
+
+router.get('/:subtodoId' , isLoggedIn , subtodoController.getAllSubtodos)
 
 module.exports = router

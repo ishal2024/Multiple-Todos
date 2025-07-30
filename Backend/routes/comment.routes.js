@@ -9,7 +9,7 @@ router.get('/:subtodoId' , isLoggedIn , commentController.getAllComments)
 
 router.get('/delete/:commentId' , isLoggedIn , commentController.deleteComment)
 
-router.get('/update/:commentId' , isLoggedIn , commentController.updateComment)
+router.post('/update/:commentId' , isLoggedIn , commentController.updateComment)
 
 
 

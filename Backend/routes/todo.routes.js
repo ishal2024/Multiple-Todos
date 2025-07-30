@@ -11,9 +11,9 @@ router.post('/join' , isLoggedIn  , todoController.addMembertoTodo)
 
 router.get('/remove/:userId/:todoId' , isLoggedIn , todoController.removeMember)
 
-router.post('/update/:todoId' , isLoggedIn , todoController.updateTodo)
+router.post('/update/:todoId' , isLoggedIn , upload.single('thumbnail')  , todoController.updateTodo)
 
-router.post('/updateThumbnail/:todoId' , isLoggedIn , upload.single('thumbnail'), todoController.updateThumbnail)
+// router.post('/updateThumbnail/:todoId' , isLoggedIn , upload.single('thumbnail'), todoController.updateThumbnail)
 
 router.get('/delete/:todoId' , isLoggedIn , todoController.deleteTodo)
 
@@ -22,5 +22,9 @@ router.get('/makeAdmin/:userId/:todoId' , isLoggedIn , adminController.makeAdmin
 router.get('/removeAdmin/:userId/:todoId' , isLoggedIn , adminController.removeFromAdmin)
 
 router.get('/' , isLoggedIn , todoController.getAllTodos)
+
+router.get('/get/:todoId' , isLoggedIn , todoController.getTodoById)
+
+router.get('/removeCurrentUser/:todoId' , isLoggedIn , todoController.removeCurrentUser)
 
 module.exports = router

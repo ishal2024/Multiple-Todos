@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const connectDB = require('./config/db.config')
 const cookieparser = require('cookie-parser')
+const cors = require('cors')
 require('dotenv').config()
 
 // Routes
@@ -15,6 +16,10 @@ app.use(express.json())
 app.use(express.urlencoded({extended : true}))
 app.use(cookieparser())
 app.use(express.static('public'))
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true 
+}));
 
 
 app.use('/user' , userRouter)

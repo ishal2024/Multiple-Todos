@@ -1,3 +1,4 @@
+const userModels = require('../models/user.models')
 const userModel = require('../models/user.models')
 const uploadCloud = require('../utils/cloudinary.utils')
 const bcrypt = require('../utils/hashPassword.utils')
@@ -57,7 +58,7 @@ async function logout(req, res) {
             httpOnly: true,
             secure: true
         }
-        res.status(400).clearCookie('token', object).json({ message: 'User Logged Out', user })
+        res.status(200).clearCookie('token', object).json({ message: 'User Logged Out', user })
 
     } catch (error) {
         res.status(400).json({ message: error.message })
@@ -109,4 +110,26 @@ async function updateUser(req, res) {
     }
 }
 
-module.exports = { registerUser, loginUser, logout, updateImage, updateUser }
+async function getUserInfo(req,res){
+    if(req?.user){
+        res.status(200).json({message : "Logged In User Info" , userInfo : req?.user})
+    }
+}
+
+async function changePassword(req,res){
+    try {
+        const pass = req?.body?.password
+        if(!pass) return res.status(400).json({ messgae: "Password is Undefined" })
+        const hashPass = await bcrypt.hashPassword(pass)
+        const user = await userModels.findByIdAndUpdate(req?.user?._id , {
+            $set : {password : hashPass}
+        } , {new : true})
+
+        res.status(200).json({ messgae: "Password is Updated" , updatedUser : user })
+        
+    } catch (error) {
+        res.status(400).json({ messgae: error.message })
+    }
+}
+
+module.exports = { registerUser, loginUser, logout, updateImage, updateUser , getUserInfo , changePassword}
