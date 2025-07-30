@@ -179,6 +179,7 @@ function CreateProjectForm() {
             accept="image/*"
             {...register("thumbnail")}
             className=" px-4 py-2 rounded-md"
+            
           />
         )}
 

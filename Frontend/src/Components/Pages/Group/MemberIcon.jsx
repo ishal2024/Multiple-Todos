@@ -65,7 +65,7 @@ function MemberIcon({ user, todo , todoForAdmin , setRefreshPage}) {
       {/* Profile + Name */}
       <div className="flex items-center gap-3">
         <img
-          src={user?.profileImage || "https://via.placeholder.com/150"}
+          src={user?.profileImage || "https://imgs.search.brave.com/mxawWquDU3JSTrvgfYeUemUi6O1AwrjgnN5fQ5OLNHQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/aWNvbnNjb3V0LmNv/bS9pY29uL3ByZW1p/dW0vcG5nLTI1Ni10/aHVtYi9wZnAtcHJv/ZmlsZS1waWN0dXJl/LTUzODIyMTMtNDQ5/NTg0Mi5wbmc_Zj13/ZWJwJnc9MTI4"}
           alt={user?.fullname}
           className="w-10 h-10 rounded-full object-cover"
         />

@@ -33,7 +33,7 @@ function Profile() {
         <h2 className="text-2xl font-bold mb-4 ">Profile Image</h2>
         <div className="flex items-center gap-6">
           <img
-            src={user.profileImage}
+            src={user?.profileImage == "" ? user?.profileImage : "https://imgs.search.brave.com/mxawWquDU3JSTrvgfYeUemUi6O1AwrjgnN5fQ5OLNHQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/aWNvbnNjb3V0LmNv/bS9pY29uL3ByZW1p/dW0vcG5nLTI1Ni10/aHVtYi9wZnAtcHJv/ZmlsZS1waWN0dXJl/LTUzODIyMTMtNDQ5/NTg0Mi5wbmc_Zj13/ZWJwJnc9MTI4"}
             alt="Profile"
             className="w-48 h-38 rounded-lg object-cover shadow"
           />
