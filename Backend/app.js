@@ -16,10 +16,21 @@ app.use(express.json())
 app.use(express.urlencoded({extended : true}))
 app.use(cookieparser())
 app.use(express.static('public'))
+
+const allowedOrigin = 'https://brandpost.netlify.app'
+
 app.use(cors({
-  origin: 'https://brandpost.netlify.app',
-  credentials: true 
-}));
+  origin: allowedOrigin,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
+
+// ✅ Handle Preflight Requests
+app.options('*', cors({
+  origin: allowedOrigin,
+  credentials: true,
+}))
 
 
 app.use('/user' , userRouter)
