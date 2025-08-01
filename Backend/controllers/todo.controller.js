@@ -179,7 +179,7 @@ async function getAllTodos(req,res){
         res.status(200).json({message : "All Todos" , todos })
         
     } catch (error) {
-        res.status(200).json({message : error.message})
+        res.status(200).json({message : error.message , todos : []})
     }
 
 }
