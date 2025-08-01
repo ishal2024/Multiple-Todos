@@ -5,21 +5,26 @@ import JoinTodoBox from './JoinTodoBox'
 import { getAllTodos } from '../../../api/todos/getTodos'
 import Container from '../../Layout/Container'
 import { useSelector } from 'react-redux'
+import Spinner from '../../Layout/Spinner'
 
 function Dashboard() {
 
   const [todos, setTodos] = useState([])
   const pageRefresh = useSelector((state) => state?.admin?.userPageRefresh)
   const theme = useSelector((state) => state?.theme)
+  const [apiSpinner , setApiSpinner] = useState(false)
 
   async function getTodos() {
+      setApiSpinner(true)
     try {
       const response = await getAllTodos()
       console.log(response)
       if (response?.data?.todos) {
+        setApiSpinner(false)
         setTodos(response?.data?.todos)
       }
     } catch (error) {
+      setApiSpinner(false)
       console.log(error?.response?.message)
     }
   }
@@ -27,7 +32,9 @@ function Dashboard() {
 
 
   useEffect(() => {
+  
     getTodos()
+    
   }, [pageRefresh])
 
 
@@ -44,10 +51,10 @@ function Dashboard() {
             All Groups
           </h2>
 
-         <div className='w-full  flex justify-center'>
+         {apiSpinner ? <Spinner />  :  <div className='w-full  flex justify-center'>
           <Todos todos={todos} />
-          </div>
-        </div>
+          </div>}
+        </div> 
       </Container>
     </>
   )

@@ -4,6 +4,7 @@ import { X } from 'lucide-react';
 import CommentCard from './CommentCard'
 import AddComment from './AddComment'
 import { useSelector } from 'react-redux';
+import { ClipLoader } from 'react-spinners';
 
 function CommentBox({ subTodoId, setIsCommentBoxVisible }) {
 
@@ -12,12 +13,18 @@ function CommentBox({ subTodoId, setIsCommentBoxVisible }) {
     const [updatedComment, setUpdatedComment] = useState(null)
     const [updatedCommentId, setUpdatedCommentId] = useState(null)
      const theme = useSelector((state) => state?.theme)
+     const [apiSpinner , setApiSpinner] = useState(false)
 
     async function getComments() {
+        setApiSpinner(true)
         try {
             const res = await getAllComments(subTodoId)
-            if (res?.data?.comments) setComments(res?.data?.comments.reverse())
+            if (res?.data?.comments){
+                setComments(res?.data?.comments.reverse())
+                setApiSpinner(false)
+            }
         } catch (error) {
+             setApiSpinner(false)
             console.log(error)
         }
     }
@@ -50,7 +57,8 @@ function CommentBox({ subTodoId, setIsCommentBoxVisible }) {
                     </div>
 
                     {/* 💬 Comments List */}
-                    {comments.length !== 0 ? <div className="w-full flex flex-col gap-y-3 items-center max-h-[300px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+             {apiSpinner ?  <div className='w-full h-16 flex justify-center items-center'><ClipLoader /></div>   : 
+             comments.length !== 0 ? <div className="w-full flex flex-col gap-y-3 items-center max-h-[300px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                         {comments.map((val) => (
                             <CommentCard
                                 key={val._id}
@@ -60,7 +68,9 @@ function CommentBox({ subTodoId, setIsCommentBoxVisible }) {
                                 setUpdatedCommentId={setUpdatedCommentId}
                             />
                         ))}
-                    </div> : <div className={`text-3xl p-4 text-center ${theme?.primaryTextColor}`}>No Comments are Added</div>}
+                    </div>
+                     : <div className={`text-3xl p-4 text-center ${theme?.primaryTextColor}`}>No Comments are Added</div>
+                     }
 
                     {/* ➕ Add Comment */}
                     <AddComment
