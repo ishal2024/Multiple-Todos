@@ -17,7 +17,7 @@ app.use(express.urlencoded({extended : true}))
 app.use(cookieparser())
 app.use(express.static('public'))
 
-const allowedOrigins = ['http://localhost:3000', 'https://brandpost.netlify.app']
+const allowedOrigins = ['http://localhost:5173', 'https://brandpost.netlify.app']
 
 app.use(cors({
   origin: function (origin, callback) {
