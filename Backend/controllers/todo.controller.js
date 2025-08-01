@@ -175,8 +175,8 @@ async function getAllTodos(req,res){
     try {
         const userId = req.user?._id
         const todos = await todoModels.find({$or : [{members : userId} , {admin : userId}]})
-        if(todos.length === 0) return res.status(200).json({message : "No todos available"})
-        res.status(200).json({message : "All Todos" , todos})
+        if(todos.length === 0) return res.status(200).json({message : "No todos available" , todos : []})
+        res.status(200).json({message : "All Todos" , todos })
         
     } catch (error) {
         res.status(200).json({message : error.message})
@@ -188,11 +188,11 @@ async function getTodoById(req,res){
     try {
         const todoId = req?.params?.todoId
         const todo = await todoModels.find({'_id' : todoId}).populate('admin').populate('members')
-        if(todo.length === 0) return res.status(200).json({message : "No todos available"})
+        if(todo.length === 0) return res.status(200).json({message : "No todos available" , todo : []})
         res.status(200).json({message : "All Todos" , todo})
         
     } catch (error) {
-        res.status(200).json({message : error.message})
+        res.status(200).json({message : error.message , todo : []})
     }
 
 }

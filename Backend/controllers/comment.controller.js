@@ -39,18 +39,18 @@ async function getAllComments(req, res) {
     try {
         const subtodoId  = req.params?.subtodoId 
 
-        if (!subtodoId) return res.status(400).json({ message: "Please enter todoId or subtodoId" })
+        if (!subtodoId) return res.status(400).json({ message: "Please enter todoId or subtodoId" , comments : [] })
 
         const subtodo = await subtodosModel.findById(subtodoId)
 
-        if (!subtodo) return res.status(400).json({ message: "Invalid subtodoId " })
+        if (!subtodo) return res.status(400).json({ message: "Invalid subtodoId "  , comments : []})
 
         const comments = await commentModel.find({ subtodo: subtodoId }).populate('owner')
 
         res.status(200).json({ message: "All Comments", comments })
 
     } catch (error) {
-        res.status(400).json({ message: error.message })
+        res.status(400).json({ message: error.message , comments : [] })
     }
 }
 
