@@ -21,7 +21,7 @@ function SubTodos({todoAdded }) {
                setSubTodos(response?.data?.subtodos)
                setApiSpinner(false)
            }
-          
+            else setApiSpinner(false)
         } catch (error) {
            setApiSpinner(false)
            console.log(error)

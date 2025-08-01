@@ -23,6 +23,7 @@ function AdminTodo() {
                 setTodos(filterTodo)
                 setApiSpinner(false)
             }
+            else setApiSpinner(false)
         } catch (error) {
             setApiSpinner(false)
             console.log(error?.response?.message)

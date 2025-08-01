@@ -7,17 +7,15 @@ import { useSelector } from 'react-redux'
 import Sidebar from './Components/Layout/Sidebar'
 import { Outlet } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
-import GlobalRouter from './Components/Layout/GlobalRouter'
+
 
 function App() {
 
 
   return (
-    <>
-      <GlobalRouter />
+    <>      
       <ToastContainer />
       <Sidebar />
-
     </>
   )
 }

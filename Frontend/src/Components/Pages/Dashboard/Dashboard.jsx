@@ -23,6 +23,7 @@ function Dashboard() {
         setApiSpinner(false)
         setTodos(response?.data?.todos)
       }
+      else setApiSpinner(false)
     } catch (error) {
       setApiSpinner(false)
       console.log(error?.response?.message)

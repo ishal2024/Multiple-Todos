@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { createComments, modifyComment } from '../../../api/subTodos/comment'
 import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
+import { ClipLoader } from 'react-spinners'
 
 function AddComment({ subTodoId, setIsCommentAdded , updatedComment , updatedCommentId , setUpdatedComment}) {
 
   const [comment, setComment] = useState("")
   const theme = useSelector((state) => state?.theme)
+  
   console.log(subTodoId)
 
   async function addComment() {
+    
     try {
       const res = await createComments(subTodoId, { content: comment })
 
@@ -18,9 +21,12 @@ function AddComment({ subTodoId, setIsCommentAdded , updatedComment , updatedCom
         setComment("")
         setIsCommentAdded((prev) => !prev)
         toast.success(res?.data?.message)
+        
       }
+      
     } catch (error) {
       setComment("")
+      
       toast.error(error?.response?.data?.message)
     }
   }
